@@ -1,6 +1,6 @@
 {
     "name": "arillo/silverstripe-links",
-    "description": "Link types",
+    "description": "Add links to any DataObject.",
     "type": "silverstripe-vendormodule",
     "homepage": "https://github.com/arillo/silverstripe-links",
     "keywords": ["silverstripe", "link"],
