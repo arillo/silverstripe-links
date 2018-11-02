@@ -1,8 +1,8 @@
 # Arillo\Links
 
-[![Latest Stable Version](https://poser.pugx.org/arillo/silverstripe-shortpixel/v/stable?format=flat)](https://packagist.org/packages/arillo/silverstripe-links)
+[![Latest Stable Version](https://poser.pugx.org/arillo/silverstripe-links/v/stable?format=flat)](https://packagist.org/packages/arillo/silverstripe-links)
 &nbsp;
-[![Total Downloads](https://poser.pugx.org/arillo/silverstripe-shortpixel/downloads?format=flat)](https://packagist.org/packages/arillo/silverstripe-links)
+[![Total Downloads](https://poser.pugx.org/arillo/silverstripe-links/downloads?format=flat)](https://packagist.org/packages/arillo/silverstripe-links)
 
 Add links to any DataObject.
 
