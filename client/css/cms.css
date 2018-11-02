@@ -1,0 +1,9 @@
+div.field.display-logic-hidden[style="display: block;"] {
+  display: -webkit-box !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+}
+
+div.field.display-logic-hidden .form-group {
+  width: 100%;
+}

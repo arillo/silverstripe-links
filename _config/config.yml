@@ -1,0 +1,6 @@
+---
+Name: arillo-links
+---
+SilverStripe\Admin\LeftAndMain:
+  extra_requirements_css:
+    - arillo/silverstripe-links:client/css/cms.css

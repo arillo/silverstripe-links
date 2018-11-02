@@ -1,0 +1,30 @@
+{
+    "name": "arillo/silverstripe-links",
+    "description": "Link types",
+    "type": "silverstripe-vendormodule",
+    "homepage": "https://github.com/arillo/silverstripe-links",
+    "keywords": ["silverstripe", "link"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sebastian Fischer",
+            "email": "sf@arillo.net"
+        }
+    ],
+    "extra": {
+        "installer-name": "links",
+        "expose": ["client"]
+    },
+    "require": {
+        "silverstripe/display-logic": "^2",
+        "silvershop/silverstripe-hasonefield": "2.1.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Arillo\\Links\\": "src/"
+        }
+    },
+    "support": {
+        "issues": "https://github.com/arillo/silverstripe-links/issues"
+    }
+}
