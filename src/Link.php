@@ -91,7 +91,7 @@ class Link extends DataObject
      * Maps link field names with prefixed link field names.
      * @return array
      */
-    public static function map_link_fields()
+    public static function map_prefix_link_fields()
     {
         $fields = array_keys(Config::inst()->get(__CLASS__, 'db'));
         $fields = array_merge(
@@ -120,7 +120,7 @@ class Link extends DataObject
      */
     public static function write_prefixed(DataObject $owner)
     {
-        $fields = self::map_link_fields();
+        $fields = self::map_prefix_link_fields();
         $link = $owner->{LinkExtension::FIELD}();
 
         if (
@@ -229,7 +229,7 @@ class Link extends DataObject
             && $record->{LinkExtension::FIELD . 'ID' > 0}
         ) {
             $link = $record->{LinkExtension::FIELD}();
-            $linkFields = self::map_link_fields();
+            $linkFields = self::map_prefix_link_fields();
             foreach ($linkFields as $field => $prefixedField)
             {
                 $record->{$prefixedField} = $link->{$field};
