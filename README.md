@@ -57,7 +57,7 @@ class MyDataObject extends DataObject
 
 Inspect `Arillo\Links\Link::DEFAULT_FIELDS_CONFIG` for all available config keys.
 
-In links can be rendered in templates like this:
+A link can be rendered in templates like this:
 
 ```
 <% if $Link.Exists %>
