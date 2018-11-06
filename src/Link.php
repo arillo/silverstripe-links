@@ -141,6 +141,7 @@ class Link extends DataObject
             }
 
             $link->write();
+
             $owner->{LinkExtension::FIELD . 'ID'} = $link->ID;
         }
 
@@ -401,7 +402,10 @@ class Link extends DataObject
     public function getHref()
     {
         $link = static::href_for($this);
-        $this->extend('updateHref', $link);
+
+        $extendedLink = $this->extend('updateHref', $link);
+        if (isset($extendedLink) && count($extendedLink)) return $extendedLink[0];
+
         return $link;
     }
 }
