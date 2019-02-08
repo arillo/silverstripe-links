@@ -239,11 +239,18 @@ class Link extends DataObject
 
         $types = Config::inst()->get(__CLASS__, 'link_types');
 
+        $typesMap = [];
+
+        foreach ($types as $type)
+        {
+            $typesMap[$type] = _t(__CLASS__ . ".Type_{$type}", $type);
+        }
+
         $fields = [
             DropdownField::create(
                 "{$fieldsPrefix}Type",
                 _t(__CLASS__ . '.Type', 'Link type'),
-                array_combine($types, $types)
+                $typesMap
             ),
 
             CheckboxField::create(
@@ -275,7 +282,7 @@ class Link extends DataObject
             $fields,
             TextField::create(
                 "{$fieldsPrefix}URL",
-                'Url'
+                _t(__CLASS__ . '.URL', 'Url')
             )
                 ->displayIf("{$fieldsPrefix}Type")
                 ->isEqualTo('external')
@@ -283,7 +290,7 @@ class Link extends DataObject
             ,
             TextField::create(
                 "{$fieldsPrefix}Email",
-                'Email-Address'
+                _t(__CLASS__ . '.Email', 'Email-Address')
             )
                 ->displayIf("{$fieldsPrefix}Type")
                 ->isEqualTo('email')
@@ -293,7 +300,7 @@ class Link extends DataObject
             Wrapper::create(
                 TreeDropdownField::create(
                     "{$fieldsPrefix}PageID",
-                    'Page',
+                    _t(__CLASS__ . '.Page', 'Page'),
                     SiteTree::class
                 )
             )
