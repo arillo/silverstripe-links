@@ -268,7 +268,7 @@ class Link extends DataObject
         {
             $fields[] = TextField::create(
                 "{$fieldsPrefix}Title",
-                'Link title'
+                _t(__CLASS__ . '.Title', 'Link title')
             )
                 ->displayIf("{$fieldsPrefix}Type")
                 ->isNotEqualTo('none')
