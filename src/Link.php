@@ -273,7 +273,7 @@ class Link extends DataObject
                 ->displayIf("{$fieldsPrefix}Type")
                 ->isNotEqualTo('none')
                 ->andIf("{$fieldsPrefix}Type")
-                ->isNotEqualTo('email')
+                // ->isNotEqualTo('email')
                 ->end()
             ;
         }
