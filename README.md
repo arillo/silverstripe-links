@@ -64,8 +64,8 @@ Inspect `Arillo\Links\Link::DEFAULT_FIELDS_CONFIG` for all available config keys
 A link can be rendered in templates like this:
 
 ```
-<% if $Link.Exists %>
-  <% with $Link %>
+<% if $LinkObject.Exists %>
+  <% with $LinkObject %>
     <a href="$Href" $TargetAttr.RAW>$Title</a>
   <% end_with %>
 <% end_if %>
