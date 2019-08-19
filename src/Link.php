@@ -398,7 +398,7 @@ class Link extends DataObject
      */
     public function getTargetAttr()
     {
-        if ($this->External) return 'target="_blank" rel="noopener noreferrer"';
+        if ($this->External) return 'target="_blank" rel="noopener"';
 
         return null;
     }
