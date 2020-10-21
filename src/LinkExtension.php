@@ -13,15 +13,11 @@ class LinkExtension extends DataExtension
 {
     const FIELD = 'LinkObject';
 
-    private static
-        $has_one = [
-            self::FIELD => Link::class,
-        ],
+    private static $has_one = [
+        self::FIELD => Link::class,
+    ];
 
-        $owns = [
-            self::FIELD,
-        ]
-    ;
+    private static $owns = [self::FIELD];
 
     public function onBeforeWrite()
     {
@@ -34,6 +30,8 @@ class LinkExtension extends DataExtension
         parent::onBeforeDelete();
         $link = $this->owner->{self::FIELD}();
 
-        if ($link->exists()) $link->delete();
+        if ($link->exists()) {
+            $link->delete();
+        }
     }
 }

@@ -7,14 +7,12 @@ use SilverStripe\Core\Config\Config;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\Email\Email;
 
-use SilverStripe\Forms\{
-    TextField,
-    FieldList,
-    TreeDropdownField,
-    DropdownField,
-    CheckboxField,
-    TabSet
-};
+use SilverStripe\Forms\TextField;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\TreeDropdownField;
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\CheckboxField;
+use SilverStripe\Forms\TabSet;
 
 use UncleCheese\DisplayLogic\Forms\Wrapper;
 use SilverShop\HasOneField\HasOneButtonField;
@@ -57,9 +55,7 @@ class Link extends DataObject
         'fieldsPrefix' => null, // fields prefix used in EDITMODE_PLAIN
     ];
 
-    private static
-        $table_name = 'Arillo_Link',
-
+    private static $table_name = 'Arillo_Link',
         $db = [
             'Title' => 'Varchar(255)',
             'URL' => 'Varchar(255)',
@@ -67,45 +63,30 @@ class Link extends DataObject
             'Type' => 'Varchar(255)',
             'External' => 'Boolean',
         ],
-
         $has_one = [
             'Page' => SiteTree::class,
         ],
-
         $email_obfuscation_method = 'hex', // hex, visible, direction
-
-        $link_types = [
-            'none',
-            'internal',
-            'external',
-            'email'
-        ],
-
-        $searchable_fields = [
-            'Title',
-            'URL',
-        ]
-    ;
+        $link_types = ['none', 'internal', 'external', 'email'],
+        $searchable_fields = ['Title', 'URL'];
 
     /**
      * Maps link field names with prefixed link field names.
      * @return array
      */
-    public static function map_prefix_link_fields()
+    public static function map_prefix_link_fields(DataObject $holderRecord)
     {
         $fields = array_keys(Config::inst()->get(__CLASS__, 'db'));
         $fields = array_merge(
             $fields,
-            array_map(
-                function($f) { return "{$f}ID"; },
-                array_keys(Config::inst()->get(__CLASS__, 'has_one'))
-            )
+            array_map(function ($f) {
+                return "{$f}ID";
+            }, array_keys(Config::inst()->get(__CLASS__, 'has_one')))
         );
 
         $linkFields = [];
 
-        foreach ($fields as $field)
-        {
+        foreach ($fields as $field) {
             $linkFields[$field] = self::PLAINMODE_PREFIX . $field;
         }
 
@@ -115,37 +96,34 @@ class Link extends DataObject
     /**
      * Writes prefixed fields into the related link object.
      *
-     * @param  DataObject $owner
+     * @param  DataObject $holderRecord
      * @return DataObject
      */
-    public static function write_prefixed(DataObject $owner)
+    public static function write_prefixed(DataObject $holderRecord)
     {
-        $fields = self::map_prefix_link_fields();
-        $link = $owner->{LinkExtension::FIELD}();
+        $fields = self::map_prefix_link_fields($holderRecord);
+        $link = $holderRecord->{LinkExtension::FIELD}();
 
-        if (
-            $owner->{self::PLAINMODE_PREFIX . 'Type'}
-        ) {
+        if ($holderRecord->{self::PLAINMODE_PREFIX . 'Type'}) {
             if (
-                $owner->{self::PLAINMODE_PREFIX . 'Type'} == 'none'
-                && $link->exists()
+                $holderRecord->{self::PLAINMODE_PREFIX . 'Type'} == 'none' &&
+                $link->exists()
             ) {
                 $link->delete();
-                $owner->{LinkExtension::FIELD . 'ID'} = 0;
-                return $owner;
+                $holderRecord->{LinkExtension::FIELD . 'ID'} = 0;
+                return $holderRecord;
             }
 
-            foreach ($fields as $field => $prefixedField)
-            {
-                $link->{$field} = $owner->{$prefixedField};
+            foreach ($fields as $field => $prefixedField) {
+                $link->{$field} = $holderRecord->{$prefixedField};
             }
 
             $link->write();
 
-            $owner->{LinkExtension::FIELD . 'ID'} = $link->ID;
+            $holderRecord->{LinkExtension::FIELD . 'ID'} = $link->ID;
         }
 
-        return $owner;
+        return $holderRecord;
     }
 
     /**
@@ -164,19 +142,15 @@ class Link extends DataObject
      * @param  array      $config
      * @return array
      */
-    public static function edit_fields(
-        DataObject $record,
-        array $config = []
-    ) {
+    public static function edit_fields(DataObject $record, array $config = [])
+    {
         $fields = [];
 
         $config = self::fields_config($config);
 
-        switch ($config['mode'])
-        {
+        switch ($config['mode']) {
             case self::EDITMODE_NESTED:
-                if ($record->exists())
-                {
+                if ($record->exists()) {
                     $link = HasOneButtonField::create(
                         $record,
                         $config['field'],
@@ -190,8 +164,7 @@ class Link extends DataObject
                         ->removeComponentsByType(
                             GridFieldAddExistingAutocompleter::class
                         )
-                        ->addComponent(new GridFieldDeleteAction())
-                    ;
+                        ->addComponent(new GridFieldDeleteAction());
 
                     $fields[] = $link;
                 }
@@ -201,7 +174,8 @@ class Link extends DataObject
                 $fields = self::cms_fields(
                     $record,
                     array_merge($config, [
-                        'fieldsPrefix' => $config['fieldsPrefix'] ?? Link::PLAINMODE_PREFIX
+                        'fieldsPrefix' =>
+                            $config['fieldsPrefix'] ?? Link::PLAINMODE_PREFIX,
                     ])
                 );
                 break;
@@ -218,22 +192,18 @@ class Link extends DataObject
      * @return array
      */
     public static function cms_fields(
-        DataObject $record,
+        DataObject $holderRecord,
         array $config = []
     ) {
         $config = self::fields_config($config);
 
         $fieldsPrefix = $config['fieldsPrefix'];
 
-        if (
-            $fieldsPrefix
-            && $record->{LinkExtension::FIELD . 'ID' > 0}
-        ) {
-            $link = $record->{LinkExtension::FIELD}();
-            $linkFields = self::map_prefix_link_fields();
-            foreach ($linkFields as $field => $prefixedField)
-            {
-                $record->{$prefixedField} = $link->{$field};
+        if ($fieldsPrefix && $holderRecord->{LinkExtension::FIELD . 'ID' > 0}) {
+            $link = $holderRecord->{LinkExtension::FIELD}();
+            $linkFields = self::map_prefix_link_fields($holderRecord);
+            foreach ($linkFields as $field => $prefixedField) {
+                $holderRecord->{$prefixedField} = $link->{$field};
             }
         }
 
@@ -241,8 +211,7 @@ class Link extends DataObject
 
         $typesMap = [];
 
-        foreach ($types as $type)
-        {
+        foreach ($types as $type) {
             $typesMap[$type] = _t(__CLASS__ . ".Type_{$type}", $type);
         }
 
@@ -261,11 +230,10 @@ class Link extends DataObject
                 ->isNotEqualTo('none')
                 ->andIf("{$fieldsPrefix}Type")
                 ->isNotEqualTo('email')
-                ->end()
+                ->end(),
         ];
 
-        if ($config['showLinkTitle'])
-        {
+        if ($config['showLinkTitle']) {
             $fields[] = TextField::create(
                 "{$fieldsPrefix}Title",
                 _t(__CLASS__ . '.Title', 'Link title')
@@ -274,8 +242,7 @@ class Link extends DataObject
                 ->isNotEqualTo('none')
                 ->andIf("{$fieldsPrefix}Type")
                 // ->isNotEqualTo('email')
-                ->end()
-            ;
+                ->end();
         }
 
         array_push(
@@ -286,17 +253,14 @@ class Link extends DataObject
             )
                 ->displayIf("{$fieldsPrefix}Type")
                 ->isEqualTo('external')
-                ->end()
-            ,
+                ->end(),
             TextField::create(
                 "{$fieldsPrefix}Email",
                 _t(__CLASS__ . '.Email', 'Email-Address')
             )
                 ->displayIf("{$fieldsPrefix}Type")
                 ->isEqualTo('email')
-                ->end()
-            ,
-
+                ->end(),
             Wrapper::create(
                 TreeDropdownField::create(
                     "{$fieldsPrefix}PageID",
@@ -313,15 +277,16 @@ class Link extends DataObject
         $fluentClass = 'TractorCow\Fluent\Extension\FluentExtension';
 
         if (
-            $record->hasExtension($fluentClass)
-            && $translate = Config::inst()->get(__CLASS__, 'translate')
+            $holderRecord->hasExtension($fluentClass) &&
+            ($translate = Config::inst()->get(__CLASS__, 'translate'))
         ) {
-
-            foreach ($fields as $field)
-            {
+            foreach ($fields as $field) {
                 if (
-                    !in_array(ltrim($field->ID(), self::PLAINMODE_PREFIX), $translate)
-                    || $field->hasClass('fluent__localised-field')
+                    !in_array(
+                        ltrim($field->ID(), self::PLAINMODE_PREFIX),
+                        $translate
+                    ) ||
+                    $field->hasClass('fluent__localised-field')
                 ) {
                     continue;
                 }
@@ -338,10 +303,18 @@ class Link extends DataObject
 
                 $field->addExtraClass('fluent__localised-field');
                 $field->setTitle(
-                    DBField::create_field('HTMLFragment', $tooltip . $field->Title())
+                    DBField::create_field(
+                        'HTMLFragment',
+                        $tooltip . $field->Title()
+                    )
                 );
             }
         }
+        $fields = FieldList::create($fields);
+
+        $holderRecord
+            ->{LinkExtension::FIELD}()
+            ->updateLinkCMSFields($fields, $holderRecord, $config);
 
         return $fields;
     }
@@ -354,14 +327,17 @@ class Link extends DataObject
      */
     public static function href_for(Link $record)
     {
-        switch (true)
-        {
+        $href = null;
+        switch (true) {
             case $record->Type == 'external' && $record->URL:
-                return $record->URL;
+                $href = $record->URL;
+                break;
 
             case $record->Type == 'internal':
                 $page = $record->Page();
-                if ($page->exists()) return $page->Link();
+                if ($page->exists()) {
+                    $href = $page->Link();
+                }
                 break;
 
             case $record->Type == 'email' && $record->Email:
@@ -369,10 +345,10 @@ class Link extends DataObject
                     $record->Email,
                     Config::inst()->get(__CLASS__, 'email_obfuscation_method')
                 );
-                return "mailto:{$email}";
-
-            default: return null;
+                $href = "mailto:{$email}";
+                break;
         }
+        return $record->updateLinkHref($href);
     }
 
     /**
@@ -381,10 +357,7 @@ class Link extends DataObject
     public function getCMSFields()
     {
         $fields = FieldList::create(TabSet::create('Root'));
-        $fields->addFieldsToTab(
-            'Root.Main',
-            self::cms_fields($this)
-        );
+        $fields->addFieldsToTab('Root.Main', self::cms_fields($this));
 
         $this->extend('updateCMSFields', $fields);
         return $fields;
@@ -398,7 +371,9 @@ class Link extends DataObject
      */
     public function getTargetAttr()
     {
-        if ($this->External) return 'target="_blank" rel="noopener"';
+        if ($this->External) {
+            return 'target="_blank" rel="noopener"';
+        }
 
         return null;
     }
@@ -411,7 +386,9 @@ class Link extends DataObject
         $link = static::href_for($this);
 
         $extendedLink = $this->extend('updateHref', $link);
-        if (isset($extendedLink) && count($extendedLink)) return $extendedLink[0];
+        if (isset($extendedLink) && count($extendedLink)) {
+            return $extendedLink[0];
+        }
 
         return $link;
     }
