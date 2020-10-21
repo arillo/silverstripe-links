@@ -348,7 +348,10 @@ class Link extends DataObject
                 $href = "mailto:{$email}";
                 break;
         }
-        return $record->updateLinkHref($href);
+        if ($record->hasMethod('updateLinkHref')) {
+            return $record->updateLinkHref($href);
+        }
+        return $href;
     }
 
     /**
