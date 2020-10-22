@@ -1,24 +1,25 @@
 <?php
 namespace Arillo\Links;
 
-use SilverStripe\ORM\DataObject;
-use SilverStripe\ORM\FieldType\DBField;
-use SilverStripe\Core\Config\Config;
-use SilverStripe\CMS\Model\SiteTree;
-use SilverStripe\Control\Email\Email;
-
-use SilverStripe\Forms\TextField;
-use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\TreeDropdownField;
-use SilverStripe\Forms\DropdownField;
-use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\TabSet;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\FormField;
+use SilverStripe\Forms\TextField;
 
+use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Core\Config\Config;
+use SilverStripe\Control\Email\Email;
+use SilverStripe\Forms\CheckboxField;
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\ORM\FieldType\DBField;
+
+use SilverStripe\Forms\TreeDropdownField;
 use UncleCheese\DisplayLogic\Forms\Wrapper;
-use SilverShop\HasOneField\HasOneButtonField;
 
-use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
+use SilverShop\HasOneField\HasOneButtonField;
 use SilverStripe\Forms\GridField\GridFieldDeleteAction;
+use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
 
 /**
  * Data model representing a link.
@@ -274,10 +275,20 @@ class Link extends DataObject
                 ->end()
         );
 
-        $fluentClass = 'TractorCow\Fluent\Extension\FluentExtension';
+        $fluentClasses = [
+            'TractorCow\Fluent\Extension\FluentExtension',
+            'TractorCow\Fluent\Extension\FluentVersionedExtension',
+        ];
 
         if (
-            $holderRecord->hasExtension($fluentClass) &&
+            array_reduce(
+                $fluentClasses,
+                function ($carry, $fluentClass) {
+                    return $carry ||
+                        self::singleton()->hasExtension($fluentClass);
+                },
+                false
+            ) &&
             ($translate = Config::inst()->get(__CLASS__, 'translate'))
         ) {
             foreach ($fields as $field) {
@@ -292,7 +303,7 @@ class Link extends DataObject
                 }
 
                 $translatedTooltipTitle = _t(
-                    "{$fluentClass}.FLUENT_ICON_TOOLTIP",
+                    __CLASS__ . '.FLUENT_ICON_TOOLTIP',
                     'Translatable field'
                 );
 

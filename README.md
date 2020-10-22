@@ -76,3 +76,80 @@ or use the template of the module:
 ```
 <% include Link Link=$LinkObject, CssClass=btn btn-primary %>
 ```
+
+## Extending
+
+Since version 1.x extensibility should have become easier.
+In this example we are adding the ability to create anchor links to [elements](https://github.com/arillo/silverstripe-elements):
+
+```php
+<?php
+namespace Arillo\Extensions;
+
+use SilverStripe\Forms\DropdownField;
+use Arillo\Elements\ElementBase;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\ORM\DataExtension;
+use Page;
+
+class LinkExtension extends DataExtension
+{
+  private static $has_one = [
+    'AnchorElement' => ElementBase::class,
+  ];
+  // alter cms fields
+  public function updateLinkCMSFields(
+    FieldList $fields,
+    DataObject $holderRecord,
+    array $config = []
+  ) {
+    $fieldsPrefix = $config['fieldsPrefix'];
+    if ($this->owner->PageID) {
+      $fields->push(
+        DropdownField::create(
+          "{$fieldsPrefix}AnchorElementID",
+          'Anker-Element',
+          $this->owner
+            ->Page()
+            ->Elements()
+            ->map()
+            ->toArray()
+        )
+          ->setEmptyString('[keins]')
+          ->displayIf("{$fieldsPrefix}Type")
+          ->isEqualTo('internal')
+          ->end()
+      );
+    }
+  }
+
+  // alter href
+  public function updateLinkHref($href)
+  {
+    if (
+      $href &&
+      $this->owner->Type == 'internal' &&
+      $this->owner->AnchorElement()->exists()
+    ) {
+      $href .= "#{$this->owner->AnchorElement()->URLSegment}";
+    }
+
+    return $href;
+  }
+}
+```
+
+Add extension via config:
+
+```yaml
+Arillo\Links\Link:
+  extensions:
+    - Arillo\Extensions\LinkExtension
+```
+
+## Changelog
+
+**1.0.0**
+
+- improved extensibility
