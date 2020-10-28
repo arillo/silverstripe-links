@@ -323,11 +323,9 @@ class Link extends DataObject
         }
         $fields = FieldList::create($fields);
 
-        if ($holderRecord->hasMethod('updateLinkCMSFields')) {
-            $holderRecord
-                ->{LinkExtension::FIELD}()
-                ->updateLinkCMSFields($fields, $holderRecord, $config);
-        }
+        $holderRecord
+            ->{LinkExtension::FIELD}()
+            ->extend('updateLinkCMSFields', $fields, $holderRecord, $config);
 
         return $fields;
     }
