@@ -252,6 +252,7 @@ class Link extends DataObject
                 "{$fieldsPrefix}URL",
                 _t(__CLASS__ . '.URL', 'Url')
             )
+                ->setDescription(_t(__CLASS__ . '.URL_Description', 'Do not forget to append a protocol (e.g. http:// or https://) for external urls.'))
                 ->displayIf("{$fieldsPrefix}Type")
                 ->isEqualTo('external')
                 ->end(),

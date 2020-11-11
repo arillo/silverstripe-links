@@ -1,12 +1,13 @@
 de:
   Arillo\Links\Link:
-    Type: 'Linktyp'
-    External: 'In neuem Fenster öffnen?'
-    Title: 'Link-Titel'
-    Url: 'Url'
-    Email: 'E-Mail-Adresse'
-    Page: 'Verlinkte Seite'
-    Type_none: 'Kein'
-    Type_internal: 'Intern'
-    Type_external: 'Extern'
-    Type_email: 'E-Mail'
+    Type: "Linktyp"
+    External: "In neuem Fenster öffnen?"
+    Title: "Link-Titel"
+    Url: "Url"
+    URL_Description: "Für externe Urls, Protokoll (zB. http:// oder https://) nicht vergessen."
+    Email: "E-Mail-Adresse"
+    Page: "Verlinkte Seite"
+    Type_none: "Kein"
+    Type_internal: "Intern"
+    Type_external: "Extern"
+    Type_email: "E-Mail"
