@@ -17,6 +17,8 @@ class LinkExtension extends DataExtension
         self::FIELD => Link::class,
     ];
 
+    private static $cascade_duplicates = [ self::FIELD ];
+
     private static $owns = [self::FIELD];
 
     public function onBeforeWrite()
@@ -34,4 +36,5 @@ class LinkExtension extends DataExtension
             $link->delete();
         }
     }
+
 }
