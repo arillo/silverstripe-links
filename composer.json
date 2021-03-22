@@ -22,7 +22,7 @@
   },
   "require": {
     "silverstripe/display-logic": "^2",
-    "silvershop/silverstripe-hasonefield": "2.1.1"
+    "silvershop/silverstripe-hasonefield": "3.0.5"
   },
   "autoload": {
     "psr-4": {

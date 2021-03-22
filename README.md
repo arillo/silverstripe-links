@@ -150,6 +150,10 @@ Arillo\Links\Link:
 
 ## Changelog
 
+**1.0.2**
+
+- upgraded `silvershop/silverstripe-hasonefield`
+
 **1.0.0**
 
 - improved extensibility
