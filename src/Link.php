@@ -104,7 +104,6 @@ class Link extends DataObject
     {
         $fields = self::map_prefix_link_fields($holderRecord);
         $link = $holderRecord->{LinkExtension::FIELD}();
-
         if ($holderRecord->{self::PLAINMODE_PREFIX . 'Type'}) {
             if (
                 $holderRecord->{self::PLAINMODE_PREFIX . 'Type'} == 'none' &&
@@ -200,7 +199,7 @@ class Link extends DataObject
 
         $fieldsPrefix = $config['fieldsPrefix'];
 
-        if ($fieldsPrefix && $holderRecord->{LinkExtension::FIELD . 'ID' > 0}) {
+        if ($fieldsPrefix && $holderRecord->{LinkExtension::FIELD . 'ID'} > 0) {
             $link = $holderRecord->{LinkExtension::FIELD}();
             $linkFields = self::map_prefix_link_fields($holderRecord);
             foreach ($linkFields as $field => $prefixedField) {
@@ -252,7 +251,12 @@ class Link extends DataObject
                 "{$fieldsPrefix}URL",
                 _t(__CLASS__ . '.URL', 'Url')
             )
-                ->setDescription(_t(__CLASS__ . '.URL_Description', 'Do not forget to append a protocol (e.g. http:// or https://) for external urls.'))
+                ->setDescription(
+                    _t(
+                        __CLASS__ . '.URL_Description',
+                        'Do not forget to append a protocol (e.g. http:// or https://) for external urls.'
+                    )
+                )
                 ->displayIf("{$fieldsPrefix}Type")
                 ->isEqualTo('external')
                 ->end(),
