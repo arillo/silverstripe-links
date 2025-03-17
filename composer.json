@@ -15,6 +15,9 @@
     }
   ],
   "extra": {
+    "branch-alias": {
+      "dev-master": "2.0.x-dev"
+    },
     "installer-name": "links",
     "expose": [
       "client"
