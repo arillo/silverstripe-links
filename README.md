@@ -8,7 +8,7 @@ Add links to any DataObject.
 
 ### Requirements
 
-SilverStripe CMS ^4.0
+SilverStripe CMS ^5.0
 
 ## Installation
 
