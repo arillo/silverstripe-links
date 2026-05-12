@@ -8,7 +8,7 @@ Add links to any DataObject.
 
 ### Requirements
 
-SilverStripe CMS ^5.0
+SilverStripe CMS ^6.0
 
 ## Installation
 
@@ -147,13 +147,3 @@ Arillo\Links\Link:
   extensions:
     - Arillo\Extensions\LinkExtension
 ```
-
-## Changelog
-
-**1.0.3**
-
-- upgraded `silvershop/silverstripe-hasonefield`
-
-**1.0.0**
-
-- improved extensibility
