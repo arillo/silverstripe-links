@@ -1,7 +1,7 @@
 <?php
 namespace Arillo\Links;
 
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 
 /**
  * Attaches a has one Link relation
@@ -9,7 +9,7 @@ use SilverStripe\ORM\DataExtension;
  * @package Arillo\Links
  * @author bumbus <sf@arillo.net>
  */
-class LinkExtension extends DataExtension
+class LinkExtension extends Extension
 {
     const FIELD = 'LinkObject';
 
@@ -21,15 +21,13 @@ class LinkExtension extends DataExtension
 
     private static $owns = [self::FIELD];
 
-    public function onBeforeWrite()
+    protected function onBeforeWrite()
     {
-        parent::onBeforeWrite();
         Link::write_prefixed($this->owner);
     }
 
-    public function onBeforeDelete()
+    protected function onBeforeDelete()
     {
-        parent::onBeforeDelete();
         $link = $this->owner->{self::FIELD}();
 
         if ($link->exists()) {
