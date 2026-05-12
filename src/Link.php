@@ -326,27 +326,28 @@ class Link extends DataObject
                 );
             }
         }
-        $fields = FieldList::create($fields);
+        $fieldList = FieldList::create($fields);
 
         if ($holderRecord->hasMethod(LinkExtension::FIELD)) {
             $holderRecord
                 ->{LinkExtension::FIELD}()
                 ->extend(
                     'updateLinkCMSFields',
-                    $fields,
+                    $fieldList,
                     $holderRecord,
                     $config
                 );
         } else {
             $holderRecord->extend(
                 'updateLinkCMSFields',
-                $fields,
+                $fieldList,
                 $holderRecord,
                 $config
             );
         }
 
-        return $fields;
+        // SS6 FieldList::addFieldsToTab strictly requires `array`; return as array.
+        return $fieldList->toArray();
     }
 
     /**
